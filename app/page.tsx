@@ -1,2 +1,5 @@
-import { redirect } from "next/navigation";
-export default function Home() { redirect("/dangote-ipo-calculator"); }
+import Calculator from "@/components/calculator";
+
+export default function Home() {
+  return <Calculator />;
+}
