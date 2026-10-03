@@ -1,0 +1,10 @@
+"use client";
+type Props = { investmentCost: string; positionValue: string | null; shares: string };
+const money = (value: string) => new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", notation: "compact", maximumFractionDigits: 1 }).format(Number(value));
+
+/** Lightweight SVG: it renders only authoritative results returned by the calculator API. */
+export default function PositionChart({ investmentCost, positionValue, shares }: Props) {
+  if (positionValue === null) return <div className="chart-empty">Enter a selling price per share to compare your Dangote IPO offer cost with the estimated value of those shares.</div>;
+  const investment = Number(investmentCost); const projected = Number(positionValue); const maximum = Math.max(investment, projected, 1); const data = [{ label: "Offer cost", value: investment, color: "#658178" }, { label: "Position value", value: projected, color: "#087a54" }];
+  return <figure className="position-chart" aria-labelledby="chart-title"><figcaption id="chart-title"><span>Estimated offer cost and share value</span><small>{Number(shares).toLocaleString("en-NG")} shares · uses your selling-price assumption</small></figcaption><svg viewBox="0 0 460 145" role="img" aria-label={`Offer cost ${money(investmentCost)} and estimated position value ${money(positionValue)} based on your entered price`}><line x1="28" y1="118" x2="438" y2="118" stroke="#dce3dc" />{data.map((item, index) => { const height = Math.max(5, (item.value / maximum) * 90); const x = index === 0 ? 95 : 275; return <g key={item.label}><rect x={x} y={118 - height} width="92" height={height} rx="4" fill={item.color} /><text x={x + 46} y="136" textAnchor="middle" fill="#5f6d66" fontSize="11">{item.label}</text><text x={x + 46} y={108 - height} textAnchor="middle" fill="#10251d" fontSize="12" fontWeight="700">{money(String(item.value))}</text></g>; })}</svg><table className="sr-only"><caption>Estimated Dangote IPO offer cost and position value at your entered selling price</caption><tbody>{data.map(item => <tr key={item.label}><th>{item.label}</th><td>{money(String(item.value))}</td></tr>)}</tbody></table></figure>;
+}
